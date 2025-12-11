@@ -20,6 +20,8 @@ A minimal harness demonstrating long-running autonomous coding with the Claude A
 - **Claude Opus 4.5**: Uses Claude's most capable model by default
 - **Intelligent Caching**: Reduces API calls by 60-80% (NEW)
 - **Parallel Execution**: Run multiple agents simultaneously (NEW)
+- **Auto-Commit & Push**: Automatic git operations after each session (NEW)
+- **Structured Logging**: Production-grade JSON logging (NEW)
 
 ## Prerequisites
 
@@ -77,15 +79,20 @@ pip show claude-code-sdk  # Check SDK is installed
 
 ### Optimized Version (Recommended)
 ```bash
-# With all optimizations enabled
+# With all optimizations enabled (auto-commit and push)
 python autonomous_agent_optimized.py --project-dir ./my_project
 
 # With YOLO mode (unrestricted commands)
 python autonomous_agent_optimized.py --project-dir ./my_project --yolo
 
+# Disable auto-push (commit only)
+python autonomous_agent_optimized.py --project-dir ./my_project --no-push
+
 # Monitor progress in another terminal
 python monitor.py ./my_project --watch
 ```
+
+**✨ New**: Agent automatically commits and pushes after each session!
 
 ### Original Version
 ```bash
