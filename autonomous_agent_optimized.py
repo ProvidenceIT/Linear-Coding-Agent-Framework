@@ -27,6 +27,7 @@ from datetime import datetime
 from linear_cache import LinearCache
 from logging_system import create_logger
 from linear_enhanced import create_enhanced_integration
+from git_utils import create_git_manager
 from agent import run_agent_session
 from prompts import get_initializer_prompt, get_coding_prompt
 
@@ -77,7 +78,8 @@ async def run_optimized_autonomous_agent(
     model: str,
     max_iterations: int = None,
     security_mode: str = 'standard',
-    log_level: str = 'INFO'
+    log_level: str = 'INFO',
+    auto_push: bool = True
 ):
     """
     Run autonomous agent with all optimizations enabled.
@@ -88,6 +90,7 @@ async def run_optimized_autonomous_agent(
         max_iterations: Maximum number of iterations (None = unlimited)
         security_mode: 'standard', 'yolo', or 'ultra-yolo'
         log_level: Logging level (DEBUG, INFO, WARNING, ERROR)
+        auto_push: Automatically commit and push after each session (default: True)
     """
     # Ensure absolute path
     project_dir = project_dir.resolve()
@@ -96,6 +99,7 @@ async def run_optimized_autonomous_agent(
     # Initialize optimized modules
     cache = LinearCache(project_dir)
     integration = create_enhanced_integration(project_dir, cache)
+    git_mgr = create_git_manager(project_dir, auto_push=auto_push)
 
     # Check if this is first run
     linear_marker = project_dir / ".linear_project.json"
@@ -188,6 +192,24 @@ async def run_optimized_autonomous_agent(
             print(f"    - Daily: {summary['log_files']['daily']}")
             print(f"    - Errors: {summary['log_files']['errors']}")
             print(f"{'='*70}\n")
+
+            # Auto-commit and push if enabled
+            if auto_push:
+                print("📝 Committing and pushing changes...")
+                commit_success, commit_msg = git_mgr.commit_and_push(
+                    issues_completed=[],  # TODO: Track from Linear
+                    issues_attempted=[],
+                    session_metrics=logger.metrics,
+                    session_id=session_id
+                )
+
+                if commit_success:
+                    print(f"✅ {commit_msg}\n")
+                else:
+                    print(f"⚠️  Git operation: {commit_msg}\n")
+                    if "Authentication required" in commit_msg:
+                        print("   💡 Tip: Run 'gh auth login' or set up SSH keys")
+                        print("   💡 Or disable auto-push with --no-push flag\n")
 
             # Check API usage
             api_stats = cache.get_api_stats()
@@ -290,6 +312,12 @@ Examples:
         help="Logging level (default: INFO)"
     )
 
+    parser.add_argument(
+        "--no-push",
+        action="store_true",
+        help="Disable automatic git push after each session"
+    )
+
     args = parser.parse_args()
 
     # Determine security mode
@@ -321,7 +349,8 @@ Examples:
         model=args.model,
         max_iterations=args.max_iterations,
         security_mode=security_mode,
-        log_level=args.log_level
+        log_level=args.log_level,
+        auto_push=not args.no_push
     ))
 
 

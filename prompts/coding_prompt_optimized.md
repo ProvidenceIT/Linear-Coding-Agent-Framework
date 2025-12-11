@@ -153,6 +153,10 @@ Both operations count toward API rate limit (1500/hr).
 
 ### STEP 10: COMMIT YOUR PROGRESS
 
+**IMPORTANT**: The system will automatically commit and push your work at the end of the session.
+
+However, you should still commit during the session after completing each issue:
+
 ```bash
 git add .
 git commit -m "Implement [feature name]
@@ -162,6 +166,12 @@ git commit -m "Implement [feature name]
 - Linear issue: [issue identifier]
 "
 ```
+
+**Automatic End-of-Session Commit:**
+- Runs automatically after your session completes
+- Includes session metrics and Linear issue tracking
+- Pushes to remote repository (ProvidenceIT/Linear-Coding-Agent-Harness)
+- Generates intelligent commit message with co-authorship attribution
 
 ### STEP 11: UPDATE META ISSUE
 
