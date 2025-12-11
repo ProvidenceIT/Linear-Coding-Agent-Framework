@@ -24,6 +24,7 @@ async def run_agent_session(
     client: ClaudeSDKClient,
     message: str,
     project_dir: Path,
+    logger=None
 ) -> tuple[str, str]:
     """
     Run a single agent session using Claude Agent SDK.
@@ -32,6 +33,7 @@ async def run_agent_session(
         client: Claude SDK client
         message: The prompt to send
         project_dir: Project directory path
+        logger: Optional structured logger instance
 
     Returns:
         (status, response_text) where status is:
@@ -65,6 +67,15 @@ async def run_agent_session(
                                 print(f"   Input: {input_str[:200]}...", flush=True)
                             else:
                                 print(f"   Input: {input_str}", flush=True)
+
+                        # Log tool use to structured logger
+                        if logger:
+                            logger.log_tool_use(block.name, input=input_str[:200] if len(input_str) > 200 else input_str)
+
+                            # Special handling for Linear API calls
+                            if block.name.startswith('mcp__linear__'):
+                                operation = block.name.replace('mcp__linear__', '')
+                                logger.log_linear_api_call(operation, cached=False)
 
             # Handle UserMessage (tool results)
             elif msg_type == "UserMessage" and hasattr(msg, "content"):

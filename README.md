@@ -2,6 +2,14 @@
 
 A minimal harness demonstrating long-running autonomous coding with the Claude Agent SDK. This demo implements a two-agent pattern (initializer + coding agent) with **Linear as the core project management system** for tracking all work.
 
+## 🚀 **NEW: Optimizations Available**
+
+**Encountering rate limits or security restrictions?** See [OPTIMIZATION_GUIDE.md](./OPTIMIZATION_GUIDE.md) for:
+- ⚡ **60-80% fewer API calls** via intelligent caching
+- 🔓 **YOLO security mode** (unrestricted commands)
+- 🚀 **Parallel agents** (3-5x throughput)
+- 📋 **Workflow automation** (Idea → app_spec.txt)
+
 ## Key Features
 
 - **Linear Integration**: All work is tracked as Linear issues, not local files
@@ -10,6 +18,8 @@ A minimal harness demonstrating long-running autonomous coding with the Claude A
 - **Two-Agent Pattern**: Initializer creates Linear project & issues, coding agents implement them
 - **Browser Testing**: Puppeteer MCP for UI verification
 - **Claude Opus 4.5**: Uses Claude's most capable model by default
+- **Intelligent Caching**: Reduces API calls by 60-80% (NEW)
+- **Parallel Execution**: Run multiple agents simultaneously (NEW)
 
 ## Prerequisites
 
@@ -25,20 +35,34 @@ pip install -r requirements.txt
 
 ### 2. Set Up Authentication
 
-You need two authentication tokens:
+You need two authentication tokens. You can set them using either environment variables or a `.env` file:
 
-**Claude Code OAuth Token:**
+#### Option 1: Using .env File (Recommended)
+
 ```bash
-# Generate the token using Claude Code CLI
-claude setup-token
+# Copy the example file
+cp .env.example .env
 
-# Set the environment variable
-export CLAUDE_CODE_OAUTH_TOKEN='your-oauth-token-here'
+# Edit .env and add your tokens:
+# CLAUDE_CODE_OAUTH_TOKEN=your-oauth-token-here
+# LINEAR_API_KEY=lin_api_xxxxxxxxxxxxx
 ```
 
+**Claude Code OAuth Token:**
+- Generate by running: `claude setup-token`
+- Add to `.env` file
+
 **Linear API Key:**
+- Get from: https://linear.app/YOUR-TEAM/settings/api
+- Add to `.env` file
+
+#### Option 2: Using Environment Variables
+
 ```bash
-# Get your API key from: https://linear.app/YOUR-TEAM/settings/api
+# Claude Code OAuth Token
+export CLAUDE_CODE_OAUTH_TOKEN='your-oauth-token-here'
+
+# Linear API Key
 export LINEAR_API_KEY='lin_api_xxxxxxxxxxxxx'
 ```
 
@@ -51,13 +75,26 @@ pip show claude-code-sdk  # Check SDK is installed
 
 ## Quick Start
 
+### Optimized Version (Recommended)
+```bash
+# With all optimizations enabled
+python autonomous_agent_optimized.py --project-dir ./my_project
+
+# With YOLO mode (unrestricted commands)
+python autonomous_agent_optimized.py --project-dir ./my_project --yolo
+
+# Monitor progress in another terminal
+python monitor.py ./my_project --watch
+```
+
+### Original Version
 ```bash
 python autonomous_agent_demo.py --project-dir ./my_project
 ```
 
 For testing with limited iterations:
 ```bash
-python autonomous_agent_demo.py --project-dir ./my_project --max-iterations 3
+python autonomous_agent_optimized.py --project-dir ./my_project --max-iterations 3
 ```
 
 ## How It Works
@@ -230,6 +267,47 @@ Open your Linear workspace to see:
 - Real-time status changes (Todo → In Progress → Done)
 - Implementation comments on each issue
 - Session summaries on the META issue
+
+## 🚀 Performance Optimizations
+
+### Rate Limiting Issues?
+If you're hitting Linear's 1500 req/hr limit, see [OPTIMIZATION_GUIDE.md](./OPTIMIZATION_GUIDE.md) for solutions:
+
+**Quick Fix** (60% fewer API calls):
+```bash
+cp prompts/coding_prompt_optimized.md prompts/coding_prompt.md
+```
+
+**Maximum Performance** (3-5x throughput):
+```bash
+python parallel_agent.py ./my_project 3
+```
+
+### Security Restrictions Blocking Commands?
+Enable YOLO mode (unrestricted commands):
+```python
+from security_yolo import create_yolo_client as create_client
+```
+
+See [OPTIMIZATION_GUIDE.md](./OPTIMIZATION_GUIDE.md) for full details.
+
+---
+
+## 📚 Additional Documentation
+
+- **[OPTIMIZATION_GUIDE.md](./OPTIMIZATION_GUIDE.md)** - Comprehensive optimization guide
+  - Linear API caching (60-80% reduction)
+  - YOLO security modes
+  - Parallel agent execution
+  - Workflow automation commands
+
+- **Claude Code Commands** (`.claude/commands/`):
+  - `/idea-to-spec` - Interactive spec generation
+  - `/research-tech-stack` - Technology recommendations
+  - `/generate-spec` - Automated spec creation
+  - `/optimize-agent` - Configuration optimization
+
+---
 
 ## License
 

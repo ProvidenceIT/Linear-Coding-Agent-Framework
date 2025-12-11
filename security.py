@@ -20,6 +20,11 @@ ALLOWED_COMMANDS = {
     "tail",
     "wc",
     "grep",
+    "echo",
+    # curl
+    "curl",
+    # find
+    "find",
     # File operations (agent uses SDK tools for most file ops, but cp/mkdir needed occasionally)
     "cp",
     "mkdir",

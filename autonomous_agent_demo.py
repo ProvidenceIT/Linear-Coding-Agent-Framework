@@ -19,6 +19,14 @@ from pathlib import Path
 
 from agent import run_autonomous_agent
 
+# Load environment variables from .env file if it exists
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    # python-dotenv not installed, skip .env loading
+    pass
+
 
 # Configuration
 # Using Claude Opus 4.5 as default for best coding and agentic performance

@@ -14,6 +14,14 @@ from claude_code_sdk.types import HookMatcher
 
 from security import bash_security_hook
 
+# Load environment variables from .env file if it exists
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    # python-dotenv not installed, skip .env loading
+    pass
+
 
 # Puppeteer MCP tools for browser automation
 PUPPETEER_TOOLS = [
